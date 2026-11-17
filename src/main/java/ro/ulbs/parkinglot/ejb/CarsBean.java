@@ -7,7 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import ro.ulbs.parkinglot.common.CarDto;
 import ro.ulbs.parkinglot.entities.Car;
-
+import ro.ulbs.parkinglot.entities.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -39,5 +39,18 @@ public class CarsBean {
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
+    }
+    public void createCar(String licensePlate, String parkingSpot, Long userId) {
+        LOG.info("createCar");
+
+        Car car = new Car();
+        car.setLicensePlate(licensePlate);
+        car.setParkingSpot(parkingSpot);
+
+        User user = entityManager.find(User.class, userId);
+        user.getCars().add(car);
+        car.setOwner(user);
+
+        entityManager.persist(car);
     }
 }
